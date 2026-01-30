@@ -1,0 +1,107 @@
+/* ============================================
+   Сладкарница Пчела - Main Styles
+   ============================================ */
+
+/* Base Styles */
+body {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* Font Families */
+.font-display {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-body {
+  font-family: 'Nunito', sans-serif;
+}
+
+/* ============================================
+   Custom Colors & Gradients
+   ============================================ */
+
+.honey-gradient {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+}
+
+.warm-shadow {
+  box-shadow: 0 4px 20px rgba(180, 83, 9, 0.15);
+}
+
+.bee-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5c2 0 3.5 1.5 3.5 3.5S32 12 30 12s-3.5-1.5-3.5-3.5S28 5 30 5z' fill='%23fbbf24' fill-opacity='0.1'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   Smooth Scrolling
+   ============================================ */
+
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+
+/* Float Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Fade In Up Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Animation Delays */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+
+/* ============================================
+   Card Hover Effects
+   ============================================ */
+
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(180, 83, 9, 0.2);
+}
+
+/* ============================================
+   View Transitions
+   ============================================ */
+
+@view-transition {
+  navigation: auto;
+}

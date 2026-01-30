@@ -15,15 +15,39 @@
   // Load cakes data from JSON
   async function loadCakesData() {
     try {
+      console.log('Loading cakes data from mongodb/cakes.json...');
       const response = await fetch('mongodb/cakes.json');
       if (response.ok) {
         const data = await response.json();
         cakesData = data.cakes;
+        console.log('Successfully loaded', cakesData.length, 'cakes');
         initializeCarousel();
+      } else {
+        console.error('Failed to load cakes.json:', response.status, response.statusText);
+        loadFallbackData();
       }
     } catch (error) {
       console.error('Error loading cakes data:', error);
+      loadFallbackData();
     }
+  }
+
+  // Fallback data in case JSON fails to load
+  function loadFallbackData() {
+    console.log('Loading fallback cake data...');
+    cakesData = [
+      { id: 1, name: "Торта Пчела", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4397.jpg", priceEuro: "16.82€", priceBGN: "32.90лв", category: "cakes" },
+      { id: 2, name: "Торта Шварцвалд", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_5232.jpg", priceEuro: "18.36€", priceBGN: "35.91лв", category: "cakes" },
+      { id: 3, name: "Японска торта", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_5274.jpg", priceEuro: "16.82€", priceBGN: "32.90лв", category: "cakes" },
+      { id: 4, name: "Торта Зодия", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_5307.jpg", priceEuro: "15.29€", priceBGN: "29.90лв", category: "cakes" },
+      { id: 5, name: "Торта Еклер Ягода", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_5276.jpg", priceEuro: "16.82€", priceBGN: "32.90лв", category: "cakes" },
+      { id: 6, name: "Торта Еклер Боровинка", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_5275.jpg", priceEuro: "16.82€", priceBGN: "32.90лв", category: "cakes" },
+      { id: 7, name: "Торта Уилям", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4208.jpg", priceEuro: "15.29€", priceBGN: "29.90лв", category: "cakes" },
+      { id: 8, name: "Торта Лешник", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_5334.jpg", priceEuro: "17.84€", priceBGN: "34.89лв", category: "cakes" },
+      { id: 9, name: "Торта Бавария", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4211.jpg", priceEuro: "15.29€", priceBGN: "29.90лв", category: "cakes" },
+      { id: 10, name: "Торта Магнолия", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4213.jpg", priceEuro: "16.82€", priceBGN: "32.90лв", category: "cakes" }
+    ];
+    initializeCarousel();
   }
 
   // Determine cards per view based on screen size
@@ -52,21 +76,22 @@
     
     cakesData.forEach(cake => {
       const card = document.createElement('div');
-      card.className = 'flex-shrink-0 w-full md:w-1/2 lg:w-1/3 px-3 py-4';
+      card.className = 'flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-3';
+      card.style.minWidth = (100 / currentCardsPerView) + '%';
       card.innerHTML = `
         <div class="bg-white rounded-2xl overflow-hidden warm-shadow hover:shadow-2xl transition-all h-full flex flex-col">
-          <div class="relative h-48 bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center overflow-hidden">
+          <div class="relative h-56 bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center overflow-hidden">
             <img src="${cake.image}" alt="${cake.name}" class="w-full h-full object-cover" 
-              onerror="this.style.background='linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='<span style=font-size:3.5rem>🎂</span>';"/>
+              onerror="this.style.background='linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='<span style=font-size:4rem>🎂</span>';"/>
           </div>
-          <div class="p-4 flex-1 flex flex-col">
-            <h4 class="font-display text-lg font-bold text-amber-900 mb-2">${cake.name}</h4>
+          <div class="p-5 flex-1 flex flex-col">
+            <h4 class="font-display text-xl font-bold text-amber-900 mb-3">${cake.name}</h4>
             <div class="mt-auto">
-              <div class="flex justify-between items-center mb-3">
-                <span class="text-sm text-amber-700">${cake.priceEuro}</span>
-                <span class="text-lg font-bold text-amber-600">${cake.priceBGN}</span>
+              <div class="flex justify-between items-center mb-4 pb-3 border-b border-amber-100">
+                <span class="text-sm text-amber-600 font-medium">${cake.priceEuro}</span>
+                <span class="text-xl font-bold text-amber-600">${cake.priceBGN}</span>
               </div>
-              <button class="w-full px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold rounded-lg transition-all">
+              <button class="w-full px-4 py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-all transform hover:scale-105">
                 Към поръчка 🛒
               </button>
             </div>
@@ -114,6 +139,16 @@
   // Update carousel position
   function updateCarouselPosition() {
     const slider = document.getElementById('cakes-slider');
+    const maxSlides = Math.ceil(cakesData.length / currentCardsPerView);
+    
+    // Clamp index
+    if (currentCarouselIndex >= maxSlides) {
+      currentCarouselIndex = 0;
+    }
+    if (currentCarouselIndex < 0) {
+      currentCarouselIndex = maxSlides - 1;
+    }
+    
     const translateValue = -currentCarouselIndex * 100;
     slider.style.transform = `translateX(${translateValue}%)`;
     
