@@ -45,7 +45,30 @@
       { id: 7, name: "Торта Уилям", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4208.jpg", priceEuro: "15.29€", priceBGN: "29.90лв", category: "cakes" },
       { id: 8, name: "Торта Лешник", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_5334.jpg", priceEuro: "17.84€", priceBGN: "34.89лв", category: "cakes" },
       { id: 9, name: "Торта Бавария", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4211.jpg", priceEuro: "15.29€", priceBGN: "29.90лв", category: "cakes" },
-      { id: 10, name: "Торта Магнолия", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4213.jpg", priceEuro: "16.82€", priceBGN: "32.90лв", category: "cakes" }
+      { id: 10, name: "Торта Магнолия", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4213.jpg", priceEuro: "16.82€", priceBGN: "32.90лв", category: "cakes" },
+      { id: 11, name: "Плодова торта", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_5236.jpg", priceEuro: "16.82€", priceBGN: "32.90лв", category: "cakes" },
+      { id: 12, name: "Френска селска", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4215.jpg", priceEuro: "17.84€", priceBGN: "34.89лв", category: "cakes" },
+      { id: 13, name: "Френска селска торта с боровинки", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4408.jpg", priceEuro: "17.84€", priceBGN: "34.89лв", category: "cakes" },
+      { id: 14, name: "Торта Гараш", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4431.jpg", priceEuro: "17.84€", priceBGN: "34.89лв", category: "cakes" },
+      { id: 15, name: "Торта Рафаело", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4217.jpg", priceEuro: "16.82€", priceBGN: "32.90лв", category: "cakes" },
+      { id: 16, name: "Морковена торта", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4418.jpg", priceEuro: "18.36€", priceBGN: "35.91лв", category: "cakes" },
+      { id: 17, name: "Торта Сахер", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4218.jpg", priceEuro: "23.47€", priceBGN: "45.90лв", category: "cakes" },
+      { id: 18, name: "Домашна торта с бисквити", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_5093.jpg", priceEuro: "15.29€", priceBGN: "29.90лв", category: "cakes" },
+      { id: 19, name: "Торта Тирамису", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4440.jpg", priceEuro: "29.60€", priceBGN: "57.89лв", category: "cakes" },
+      { id: 20, name: "Торта Йогурт", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_5229.jpg", priceEuro: "16.82€", priceBGN: "32.90лв", category: "cakes" },
+      { id: 21, name: "Торта Горски плод", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4439.jpg", priceEuro: "23.47€", priceBGN: "45.90лв", category: "cakes" },
+      { id: 22, name: "Торта Чиа с праскови", image: "https://www.pchela.bg/userfiles/productthumbs/thumb_4442.jpg", priceEuro: "23.47€", priceBGN: "45.90лв", category: "cakes" },
+      { id: 23, name: "Торта Шоко Вишна", image: "https://www.pchela.bg/userfiles/productimages/product_4329.jpg", priceEuro: "38.81€", priceBGN: "75.91лв", category: "cakes" },
+      { id: 24, name: "Торта София", image: "https://www.pchela.bg/userfiles/productimages/product_4424.jpg", priceEuro: "32.67€", priceBGN: "63.90лв", category: "cakes" },
+      { id: 25, name: "Торта Ден и Нощ", image: "https://www.pchela.bg/userfiles/productimages/product_4428.jpg", priceEuro: "15.29€", priceBGN: "29.90лв", category: "cakes" },
+      { id: 26, name: "Торта Орео", image: "https://www.pchela.bg/userfiles/productimages/product_4414.jpg", priceEuro: "32.67€", priceBGN: "63.90лв", category: "cakes" },
+      { id: 27, name: "Торта Веган шоколад", image: "https://www.pchela.bg/userfiles/productimages/product_4435.jpg", priceEuro: "43.92€", priceBGN: "85.90лв", category: "cakes" },
+      { id: 28, name: "Червено кадифе", image: "https://www.pchela.bg/userfiles/productimages/product_4839.jpg", priceEuro: "16.82€", priceBGN: "32.90лв", category: "cakes" },
+      { id: 29, name: "Торта Маркиза", image: "https://www.pchela.bg/userfiles/productimages/product_4837.jpg", priceEuro: "28.07€", priceBGN: "54.90лв", category: "cakes" },
+      { id: 30, name: "Зелено кадифе", image: "https://www.pchela.bg/userfiles/productimages/product_4940.jpg", priceEuro: "16.82€", priceBGN: "32.90лв", category: "cakes" },
+      { id: 31, name: "Френско кадифе", image: "https://www.pchela.bg/userfiles/productimages/product_5008.jpg", priceEuro: "33.69€", priceBGN: "65.89лв", category: "cakes" },
+      { id: 32, name: "Дубай чийзкейк", image: "https://www.pchela.bg/userfiles/productimages/product_5267.jpg", priceEuro: "38.81€", priceBGN: "75.91лв", category: "cakes" },
+      { id: 33, name: "Торта Дубай", image: "https://www.pchela.bg/userfiles/productimages/product_5271.jpg", priceEuro: "34.72€", priceBGN: "67.91лв", category: "cakes" }
     ];
     initializeCarousel();
   }
