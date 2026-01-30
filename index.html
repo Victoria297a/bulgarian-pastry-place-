@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="bg" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Сладкарница Пчела</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&amp;family=Nunito:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    .font-display {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+    
+    .font-body {
+      font-family: 'Nunito', sans-serif;
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    
+    .honey-gradient {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+    }
+    
+    .warm-shadow {
+      box-shadow: 0 4px 20px rgba(180, 83, 9, 0.15);
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(180, 83, 9, 0.2);
+    }
+    
+    .bee-pattern {
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5c2 0 3.5 1.5 3.5 3.5S32 12 30 12s-3.5-1.5-3.5-3.5S28 5 30 5z' fill='%23fbbf24' fill-opacity='0.1'/%3E%3C/svg%3E");
+    }
+    
+    .scroll-smooth {
+      scroll-behavior: smooth;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .float-animation {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .fade-in-up {
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+    
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+    .delay-400 { animation-delay: 0.4s; }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full font-body scroll-smooth">
+  <div id="app" class="h-full overflow-auto bg-amber-50"><!-- Profile Modal -->
+   <div id="profile-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-auto">
+     <div class="sticky top-0 bg-gradient-to-r from-amber-500 to-amber-600 p-6 rounded-t-3xl">
+      <div class="flex justify-between items-start">
+       <div class="flex items-center gap-4">
+        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-3xl">
+         👤
+        </div>
+        <div class="text-white">
+         <h2 id="profile-username" class="font-display text-2xl font-bold">Гост</h2>
+         <p class="text-amber-100">Член от <span id="profile-member-since">днес</span></p>
+        </div>
+       </div><button id="close-profile" class="text-white hover:text-amber-100 text-2xl">×</button>
+      </div>
+     </div>
+     <div class="p-6"><!-- Setup Profile Section (shown when no profile) -->
+      <div id="setup-profile-section">
+       <div class="text-center mb-6">
+        <h3 class="font-display text-2xl font-bold text-amber-900 mb-2">Създай своя профил</h3>
+        <p class="text-amber-700">Въведи потребителско име и започни да събираш точки!</p>
+       </div>
+       <div class="mb-4"><label for="username-input" class="block text-amber-800 font-medium mb-2">Потребителско име</label> <input type="text" id="username-input" class="w-full px-4 py-3 border-2 border-amber-200 rounded-xl focus:border-amber-400 focus:outline-none" placeholder="Въведи име...">
+       </div><button id="create-profile-btn" class="w-full px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl transition-all"> Създай профил </button>
+      </div><!-- Profile Content (shown when profile exists) -->
+      <div id="profile-content" class="hidden"><!-- Points Card -->
+       <div class="bg-gradient-to-br from-amber-100 to-amber-200 rounded-2xl p-6 mb-6">
+        <div class="flex justify-between items-center mb-4">
+         <div>
+          <p class="text-amber-700 text-sm font-medium">Твоите точки</p>
+          <p id="profile-points" class="font-display text-4xl font-bold text-amber-900">0</p>
+         </div>
+         <div class="text-5xl">
+          🐝
+         </div>
+        </div>
+        <div class="bg-white/60 rounded-xl p-4">
+         <div class="flex justify-between items-center mb-2"><span class="text-amber-700 text-sm">До следваща отстъпка:</span> <span id="points-to-discount" class="font-semibold text-amber-900">10 точки</span>
+         </div>
+         <div class="w-full bg-amber-300/30 rounded-full h-3">
+          <div id="points-progress" class="bg-amber-600 h-3 rounded-full transition-all" style="width: 0%"></div>
+         </div>
+         <p class="text-xs text-amber-600 mt-2 text-center">🎉 На всеки 10 точки → 30% отстъпка!</p>
+        </div>
+       </div><!-- Stats -->
+       <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="bg-amber-50 rounded-xl p-4 text-center">
+         <p class="text-3xl mb-1">📦</p>
+         <p id="profile-total-orders" class="font-display text-2xl font-bold text-amber-900">0</p>
+         <p class="text-amber-700 text-sm">Общо поръчки</p>
+        </div>
+        <div class="bg-amber-50 rounded-xl p-4 text-center">
+         <p class="text-3xl mb-1">🎁</p>
+         <p id="profile-discounts" class="font-display text-2xl font-bold text-amber-900">0</p>
+         <p class="text-amber-700 text-sm">Спечелени отстъпки</p>
+        </div>
+       </div><!-- Current Order -->
+       <div class="mb-6">
+        <h3 class="font-display text-xl font-bold text-amber-900 mb-3">Настояща поръчка</h3>
+        <div id="current-order-content" class="bg-amber-50 rounded-xl p-4">
+         <p class="text-amber-600 text-center">Няма текуща поръчка</p>
+        </div>
+       </div><!-- Order History -->
+       <div>
+        <h3 class="font-display text-xl font-bold text-amber-900 mb-3">История на поръчките</h3>
+        <div id="order-history-list" class="space-y-3">
+         <p class="text-amber-600 text-center bg-amber-50 rounded-xl p-6">Все още няма поръчки</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- Order Modal -->
+   <div id="order-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-auto">
+     <div class="sticky top-0 bg-gradient-to-r from-amber-500 to-amber-600 p-6 rounded-t-3xl">
+      <div class="flex justify-between items-center">
+       <h2 class="font-display text-2xl font-bold text-white">Направи поръчка</h2><button id="close-order" class="text-white hover:text-amber-100 text-2xl">×</button>
+      </div>
+     </div>
+     <div class="p-6">
+      <form id="order-form">
+       <div class="mb-6"><label class="block text-amber-800 font-medium mb-3">Избери категория:</label>
+        <div class="grid grid-cols-2 gap-3"><label class="flex items-center gap-3 p-4 border-2 border-amber-200 rounded-xl cursor-pointer hover:border-amber-400 transition-colors"> <input type="checkbox" name="category" value="напитка" data-points="3" class="w-5 h-5 text-amber-600">
+          <div>
+           <p class="font-semibold text-amber-900">Напитка 🥤</p>
+           <p class="text-xs text-amber-600">+3 точки</p>
+          </div></label> <label class="flex items-center gap-3 p-4 border-2 border-amber-200 rounded-xl cursor-pointer hover:border-amber-400 transition-colors"> <input type="checkbox" name="category" value="торта" data-points="5" class="w-5 h-5 text-amber-600">
+          <div>
+           <p class="font-semibold text-amber-900">Торта 🎂</p>
+           <p class="text-xs text-amber-600">+5 точки</p>
+          </div></label> <label class="flex items-center gap-3 p-4 border-2 border-amber-200 rounded-xl cursor-pointer hover:border-amber-400 transition-colors"> <input type="checkbox" name="category" value="солена закуска" data-points="4" class="w-5 h-5 text-amber-600">
+          <div>
+           <p class="font-semibold text-amber-900">Солена закуска 🥐</p>
+           <p class="text-xs text-amber-600">+4 точки</p>
+          </div></label> <label class="flex items-center gap-3 p-4 border-2 border-amber-200 rounded-xl cursor-pointer hover:border-amber-400 transition-colors"> <input type="checkbox" name="category" value="хляб" data-points="5" class="w-5 h-5 text-amber-600">
+          <div>
+           <p class="font-semibold text-amber-900">Хляб 🍞</p>
+           <p class="text-xs text-amber-600">+5 точки</p>
+          </div></label> <label class="flex items-center gap-3 p-4 border-2 border-amber-200 rounded-xl cursor-pointer hover:border-amber-400 transition-colors"> <input type="checkbox" name="category" value="сладолед" data-points="3" class="w-5 h-5 text-amber-600">
+          <div>
+           <p class="font-semibold text-amber-900">Сладолед 🍦</p>
+           <p class="text-xs text-amber-600">+3 точки</p>
+          </div></label> <label class="flex items-center gap-3 p-4 border-2 border-amber-200 rounded-xl cursor-pointer hover:border-amber-400 transition-colors"> <input type="checkbox" name="category" value="шоколад" data-points="5" class="w-5 h-5 text-amber-600">
+          <div>
+           <p class="font-semibold text-amber-900">Шоколад 🍫</p>
+           <p class="text-xs text-amber-600">+5 точки</p>
+          </div></label>
+        </div>
+       </div>
+       <div class="mb-6"><label for="order-details" class="block text-amber-800 font-medium mb-2">Допълнителни детайли:</label> <textarea id="order-details" rows="3" class="w-full px-4 py-3 border-2 border-amber-200 rounded-xl focus:border-amber-400 focus:outline-none resize-none" placeholder="Специални пожелания или забележки..."></textarea>
+       </div>
+       <div class="bg-amber-50 rounded-xl p-4 mb-4">
+        <div class="flex justify-between items-center"><span class="text-amber-800 font-medium">Ще спечелиш:</span> <span id="order-points-preview" class="font-display text-2xl font-bold text-amber-600">0 точки 🐝</span>
+        </div>
+       </div><button type="submit" id="submit-order-btn" class="w-full px-6 py-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl transition-all"> Потвърди поръчка </button>
+      </form>
+      <div id="order-success" class="hidden mt-4 p-4 bg-green-100 text-green-800 rounded-xl text-center">
+       <p class="font-semibold mb-1">✅ Поръчката е приета!</p>
+       <p class="text-sm">Благодарим ви! Ще се свържем с вас скоро.</p>
+      </div>
+     </div>
+    </div>
+   </div><!-- Navigation -->
+   <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm warm-shadow">
+    <div class="max-w-6xl mx-auto px-4 py-3">
+     <div class="flex items-center justify-between"><a href="#home" class="flex items-center gap-3">
+       <div class="text-4xl">
+        🐝
+       </div>
+       <div>
+        <h1 class="font-display text-2xl font-bold text-amber-800">Пчела</h1>
+        <p class="text-xs text-amber-600 -mt-1">сладкарница</p>
+       </div></a>
+      <div class="hidden md:flex items-center gap-6"><a href="#home" class="text-amber-700 hover:text-amber-900 font-medium transition-colors">Начало</a> <a href="#about" class="text-amber-700 hover:text-amber-900 font-medium transition-colors">За нас</a> <a href="#products" class="text-amber-700 hover:text-amber-900 font-medium transition-colors">Продукти</a> <a href="#contact" class="text-amber-700 hover:text-amber-900 font-medium transition-colors">Контакти</a> <button id="order-btn" class="px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-full transition-all transform hover:scale-105"> 📝 Направи поръчка </button> <button id="profile-btn" class="w-10 h-10 bg-amber-100 hover:bg-amber-200 rounded-full flex items-center justify-center transition-colors"> <span class="text-xl">👤</span> </button>
+      </div><button id="mobile-menu-btn" class="md:hidden p-2 text-amber-700">
+       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+       </svg></button>
+     </div><!-- Mobile Menu -->
+     <div id="mobile-menu" class="hidden md:hidden pt-4 pb-2 border-t border-amber-100 mt-3">
+      <div class="flex flex-col gap-3"><a href="#home" class="text-amber-700 hover:text-amber-900 font-medium py-2">Начало</a> <a href="#about" class="text-amber-700 hover:text-amber-900 font-medium py-2">За нас</a> <a href="#products" class="text-amber-700 hover:text-amber-900 font-medium py-2">Продукти</a> <a href="#contact" class="text-amber-700 hover:text-amber-900 font-medium py-2">Контакти</a> <button id="mobile-order-btn" class="mt-2 px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-full transition-all text-left"> 📝 Направи поръчка </button> <button id="mobile-profile-btn" class="px-6 py-3 bg-amber-100 hover:bg-amber-200 text-amber-700 font-semibold rounded-full transition-all text-left"> 👤 Моят профил </button>
+      </div>
+     </div>
+    </div>
+   </nav><!-- Hero Section -->
+   <section id="home" class="relative min-h-[600px] flex items-center honey-gradient bee-pattern pt-20">
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-amber-50/80"></div>
+    <div class="relative max-w-6xl mx-auto px-4 py-16 md:py-24">
+     <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="text-center md:text-left">
+       <div class="inline-block mb-4 px-4 py-2 bg-white/60 rounded-full"><span class="text-amber-700 font-medium">🍯 От 1995 година</span>
+       </div>
+       <h1 id="hero-title" class="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-amber-900 mb-6 fade-in-up">Сладкарница Пчела</h1>
+       <p id="hero-subtitle" class="text-xl md:text-2xl text-amber-800 mb-8 fade-in-up delay-100">Домашни сладкиши, приготвени с любов и традиция от три поколения майстори</p>
+       <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start fade-in-up delay-200"><a href="#products" class="px-8 py-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-full transition-all transform hover:scale-105 warm-shadow"> Разгледай Продуктите </a> <a href="#contact" class="px-8 py-4 bg-white hover:bg-amber-50 text-amber-700 font-semibold rounded-full transition-all border-2 border-amber-200"> Свържи се с нас </a>
+       </div>
+      </div>
+      <div class="relative flex justify-center">
+       <div class="relative">
+        <div class="absolute -inset-4 bg-amber-300/30 rounded-full blur-2xl"></div>
+        <div class="relative bg-white rounded-3xl p-6 warm-shadow float-animation">
+         <div class="text-9xl text-center">
+          🎂
+         </div>
+         <div class="mt-4 text-center"><span class="inline-block px-4 py-2 bg-amber-100 text-amber-800 rounded-full font-medium"> Ръчна изработка </span>
+         </div>
+        </div>
+       </div><!-- Floating elements -->
+       <div class="absolute top-0 left-0 text-4xl float-animation" style="animation-delay: 0.5s;">
+        🍰
+       </div>
+       <div class="absolute bottom-10 right-0 text-4xl float-animation" style="animation-delay: 1s;">
+        🧁
+       </div>
+       <div class="absolute top-20 right-10 text-3xl float-animation" style="animation-delay: 1.5s;">
+        🍪
+       </div>
+      </div>
+     </div>
+    </div><!-- Wave decoration -->
+    <div class="absolute bottom-0 left-0 right-0">
+     <svg viewbox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#fffbeb" />
+     </svg>
+    </div>
+   </section><!-- About Section -->
+   <section id="about" class="py-20 bg-amber-50">
+    <div class="max-w-6xl mx-auto px-4">
+     <div class="text-center mb-16"><span class="inline-block px-4 py-2 bg-amber-100 text-amber-700 rounded-full font-medium mb-4">За нас</span>
+      <h2 id="about-title" class="font-display text-4xl md:text-5xl font-bold text-amber-900 mb-4">Нашата история</h2>
+      <div class="w-24 h-1 bg-amber-400 mx-auto rounded-full"></div>
+     </div>
+     <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="relative">
+       <div class="bg-white rounded-3xl p-8 warm-shadow">
+        <div class="grid grid-cols-2 gap-4">
+         <div class="bg-amber-100 rounded-2xl p-6 text-center">
+          <div class="text-5xl mb-2">
+           👨‍👩‍👧‍👦
+          </div>
+          <p class="text-amber-800 font-medium">Семеен бизнес</p>
+         </div>
+         <div class="bg-amber-100 rounded-2xl p-6 text-center">
+          <div class="text-5xl mb-2">
+           ⏰
+          </div>
+          <p class="text-amber-800 font-medium">29+ години опит</p>
+         </div>
+         <div class="bg-amber-100 rounded-2xl p-6 text-center">
+          <div class="text-5xl mb-2">
+           🌾
+          </div>
+          <p class="text-amber-800 font-medium">Натурални продукти</p>
+         </div>
+         <div class="bg-amber-100 rounded-2xl p-6 text-center">
+          <div class="text-5xl mb-2">
+           ❤️
+          </div>
+          <p class="text-amber-800 font-medium">С много любов</p>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div>
+       <p class="text-lg text-amber-800 leading-relaxed mb-6">Добре дошли в сладкарница <strong class="text-amber-900">„Пчела"</strong> – място, където традицията среща вкуса! От 1995 година нашето семейство създава домашни сладкиши с любов и отдаденост.</p>
+       <p class="text-lg text-amber-800 leading-relaxed mb-6">Всяка наша торта, баница и сладкиш е приготвена по автентични рецепти, предавани от поколение на поколение. Използваме само <strong class="text-amber-900">натурални продукти</strong> без консерванти.</p>
+       <p class="text-lg text-amber-800 leading-relaxed mb-8">При нас ще откриете вкуса на детството – истински, домашен и незабравим. Заповядайте и се убедете сами! 🐝</p>
+       <div class="flex items-center gap-4">
+        <div class="flex -space-x-2">
+         <div class="w-12 h-12 rounded-full bg-amber-200 flex items-center justify-center text-xl border-2 border-white">
+          👵
+         </div>
+         <div class="w-12 h-12 rounded-full bg-amber-300 flex items-center justify-center text-xl border-2 border-white">
+          👨‍🍳
+         </div>
+         <div class="w-12 h-12 rounded-full bg-amber-400 flex items-center justify-center text-xl border-2 border-white">
+          👩‍🍳
+         </div>
+        </div>
+        <p class="text-amber-700 font-medium">Три поколения майстори сладкари</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Products Section -->
+   <section id="products" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+     <div class="text-center mb-16"><span class="inline-block px-4 py-2 bg-amber-100 text-amber-700 rounded-full font-medium mb-4">Меню</span>
+      <h2 id="products-title" class="font-display text-4xl md:text-5xl font-bold text-amber-900 mb-4">Нашите сладкиши</h2>
+      <div class="w-24 h-1 bg-amber-400 mx-auto rounded-full"></div>
+      <p class="text-amber-700 mt-4 max-w-2xl mx-auto">Всеки ден приготвяме прясно и с любов. Опитайте нашите специалитети!</p>
+     </div><!-- Category Tabs -->
+     <div class="flex flex-wrap justify-center gap-3 mb-12"><button class="category-btn active px-6 py-3 bg-amber-600 text-white rounded-full font-medium transition-all" data-category="all"> Всички </button> <button class="category-btn px-6 py-3 bg-amber-100 text-amber-700 hover:bg-amber-200 rounded-full font-medium transition-all" data-category="cakes"> 🎂 Торти </button> <button class="category-btn px-6 py-3 bg-amber-100 text-amber-700 hover:bg-amber-200 rounded-full font-medium transition-all" data-category="pastries"> 🥐 Сладкиши </button> <button class="category-btn px-6 py-3 bg-amber-100 text-amber-700 hover:bg-amber-200 rounded-full font-medium transition-all" data-category="banitsa"> 🥧 Баници </button>
+     </div><!-- Products Grid -->
+     <div id="products-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"><!-- Торта Гараш -->
+      <div class="product-card card-hover bg-amber-50 rounded-3xl overflow-hidden" data-category="cakes"><img src="https://www.pchela.bg/wp-content/uploads/2021/03/garash.jpg" alt="Торта Гараш" loading="lazy" class="w-full h-48 object-cover" onerror="console.error('Image failed to load:', this.src); this.style.background='linear-gradient(135deg, #78350f 0%, #451a03 100%)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='<span style=font-size:3.5rem>🍫</span>'; this.alt='Изображението не може да се зареди';">
+       <div class="p-6">
+        <div class="flex justify-between items-start mb-2">
+         <h3 class="font-display text-2xl font-bold text-amber-900">Торта Гараш</h3><span class="px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-sm font-semibold">Хит</span>
+        </div>
+        <p class="text-amber-700 mb-4">Класическа шоколадова торта с орехи и какаова глазура</p>
+        <div class="flex justify-between items-center"><span class="text-2xl font-bold text-amber-600">28.00 лв</span> <span class="text-amber-500 text-sm">/ парче 4.50 лв</span>
+        </div>
+       </div>
+      </div><!-- Торта Добош -->
+      <div class="product-card card-hover bg-amber-50 rounded-3xl overflow-hidden" data-category="cakes">
+       <div class="h-48 bg-gradient-to-br from-amber-300 to-amber-500 flex items-center justify-center"><span class="text-7xl">🎂</span>
+       </div>
+       <div class="p-6">
+        <h3 class="font-display text-2xl font-bold text-amber-900 mb-2">Торта Добош</h3>
+        <p class="text-amber-700 mb-4">Многослойна торта с карамелена коричка и шоколадов крем</p>
+        <div class="flex justify-between items-center"><span class="text-2xl font-bold text-amber-600">32.00 лв</span> <span class="text-amber-500 text-sm">/ парче 5.00 лв</span>
+        </div>
+       </div>
+      </div><!-- Бисквитена торта -->
+      <div class="product-card card-hover bg-amber-50 rounded-3xl overflow-hidden" data-category="cakes"><img src="https://www.pchela.bg/wp-content/uploads/2021/03/biskvitena.jpg" alt="Бисквитена торта" loading="lazy" class="w-full h-48 object-cover" onerror="console.error('Image failed to load:', this.src); this.style.background='linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='<span style=font-size:3.5rem>🍰</span>'; this.alt='Изображението не може да се зареди';">
+       <div class="p-6">
+        <h3 class="font-display text-2xl font-bold text-amber-900 mb-2">Бисквитена торта</h3>
+        <p class="text-amber-700 mb-4">Нежна торта с бисквити и ванилов крем</p>
+        <div class="flex justify-between items-center"><span class="text-2xl font-bold text-amber-600">22.00 лв</span> <span class="text-amber-500 text-sm">/ парче 3.50 лв</span>
+        </div>
+       </div>
+      </div><!-- Еклери -->
+      <div class="product-card card-hover bg-amber-50 rounded-3xl overflow-hidden" data-category="pastries"><img src="https://www.pchela.bg/wp-content/uploads/2021/03/ekleri.jpg" alt="Еклери" loading="lazy" class="w-full h-48 object-cover" onerror="console.error('Image failed to load:', this.src); this.style.background='linear-gradient(135deg, #fef9c3 0%, #fde68a 100%)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='<span style=font-size:3.5rem>🥖</span>'; this.alt='Изображението не може да се зареди';">
+       <div class="p-6">
+        <h3 class="font-display text-2xl font-bold text-amber-900 mb-2">Еклери</h3>
+        <p class="text-amber-700 mb-4">Хрупкави еклери с ванилов крем и шоколадова глазура</p>
+        <div class="flex justify-between items-center"><span class="text-2xl font-bold text-amber-600">2.50 лв</span> <span class="text-amber-500 text-sm">/ брой</span>
+        </div>
+       </div>
+      </div><!-- Кроасани -->
+      <div class="product-card card-hover bg-amber-50 rounded-3xl overflow-hidden" data-category="pastries"><img src="https://www.pchela.bg/wp-content/uploads/2021/03/kroasani.jpg" alt="Кроасани" loading="lazy" class="w-full h-48 object-cover" onerror="console.error('Image failed to load:', this.src); this.style.background='linear-gradient(135deg, #fde68a 0%, #fbbf24 100%)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='<span style=font-size:3.5rem>🥐</span>'; this.alt='Изображението не може да се зареди';">
+       <div class="p-6">
+        <div class="flex justify-between items-start mb-2">
+         <h3 class="font-display text-2xl font-bold text-amber-900">Кроасани</h3><span class="px-3 py-1 bg-green-200 text-green-800 rounded-full text-sm font-semibold">Пресни</span>
+        </div>
+        <p class="text-amber-700 mb-4">Маслени кроасани с шоколад или конфитюр</p>
+        <div class="flex justify-between items-center"><span class="text-2xl font-bold text-amber-600">3.00 лв</span> <span class="text-amber-500 text-sm">/ брой</span>
+        </div>
+       </div>
+      </div><!-- Мекици -->
+      <div class="product-card card-hover bg-amber-50 rounded-3xl overflow-hidden" data-category="pastries"><img src="https://www.pchela.bg/wp-content/uploads/2021/03/mekici.jpg" alt="Мекици" loading="lazy" class="w-full h-48 object-cover" onerror="console.error('Image failed to load:', this.src); this.style.background='linear-gradient(135deg, #fed7aa 0%, #fb923c 100%)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='<span style=font-size:3.5rem>🍩</span>'; this.alt='Изображението не може да се зареди';">
+       <div class="p-6">
+        <h3 class="font-display text-2xl font-bold text-amber-900 mb-2">Мекици</h3>
+        <p class="text-amber-700 mb-4">Пухкави домашни мекици с пудра захар или мед</p>
+        <div class="flex justify-between items-center"><span class="text-2xl font-bold text-amber-600">1.50 лв</span> <span class="text-amber-500 text-sm">/ брой</span>
+        </div>
+       </div>
+      </div><!-- Баница със сирене -->
+      <div class="product-card card-hover bg-amber-50 rounded-3xl overflow-hidden" data-category="banitsa"><img src="https://www.pchela.bg/wp-content/uploads/2021/03/banica.jpg" alt="Баница със сирене" loading="lazy" class="w-full h-48 object-cover" onerror="console.error('Image failed to load:', this.src); this.style.background='linear-gradient(135deg, #fef08a 0%, #fcd34d 100%)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='<span style=font-size:3.5rem>🥧</span>'; this.alt='Изображението не може да се зареди';">
+       <div class="p-6">
+        <div class="flex justify-between items-start mb-2">
+         <h3 class="font-display text-2xl font-bold text-amber-900">Баница със сирене</h3><span class="px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-sm font-semibold">Хит</span>
+        </div>
+        <p class="text-amber-700 mb-4">Традиционна българска баница с домашно сирене</p>
+        <div class="flex justify-between items-center"><span class="text-2xl font-bold text-amber-600">8.00 лв</span> <span class="text-amber-500 text-sm">/ порция</span>
+        </div>
+       </div>
+      </div><!-- Тиквеник -->
+      <div class="product-card card-hover bg-amber-50 rounded-3xl overflow-hidden" data-category="banitsa"><img src="https://www.pchela.bg/wp-content/uploads/2021/03/tikvenik.jpg" alt="Тиквеник" loading="lazy" class="w-full h-48 object-cover" onerror="console.error('Image failed to load:', this.src); this.style.background='linear-gradient(135deg, #fed7aa 0%, #fb923c 100%)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='<span style=font-size:3.5rem>🎃</span>'; this.alt='Изображението не може да се зареди';">
+       <div class="p-6">
+        <h3 class="font-display text-2xl font-bold text-amber-900 mb-2">Тиквеник</h3>
+        <p class="text-amber-700 mb-4">Сладка баница с тиква, орехи и канела</p>
+        <div class="flex justify-between items-center"><span class="text-2xl font-bold text-amber-600">7.00 лв</span> <span class="text-amber-500 text-sm">/ порция</span>
+        </div>
+       </div>
+      </div><!-- Милинка -->
+      <div class="product-card card-hover bg-amber-50 rounded-3xl overflow-hidden" data-category="banitsa"><img src="https://www.pchela.bg/wp-content/uploads/2021/03/milinka.jpg" alt="Милинка" loading="lazy" class="w-full h-48 object-cover" onerror="console.error('Image failed to load:', this.src); this.style.background='linear-gradient(135deg, #fef3c7 0%, #fde047 100%)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='<span style=font-size:3.5rem>🧈</span>'; this.alt='Изображението не може да се зареди';">
+       <div class="p-6">
+        <h3 class="font-display text-2xl font-bold text-amber-900 mb-2">Милинка</h3>
+        <p class="text-amber-700 mb-4">Хрупкава точена баница с масло</p>
+        <div class="flex justify-between items-center"><span class="text-2xl font-bold text-amber-600">6.00 лв</span> <span class="text-amber-500 text-sm">/ порция</span>
+        </div>
+       </div>
+      </div>
+     </div><!-- Order Info -->
+     <div class="mt-16 bg-gradient-to-r from-amber-100 to-amber-200 rounded-3xl p-8 md:p-12 text-center">
+      <h3 class="font-display text-3xl font-bold text-amber-900 mb-4">🎂 Поръчай торта за твоя празник!</h3>
+      <p class="text-amber-800 text-lg mb-6 max-w-2xl mx-auto">Приготвяме торти по поръчка за рождени дни, сватби, кръщенета и всякакви специални поводи. Свържете се с нас поне 2 дни предварително.</p><a href="tel:+359888123456" class="inline-flex items-center gap-2 px-8 py-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-full transition-all transform hover:scale-105 warm-shadow">
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+       </svg> Обади се сега </a>
+     </div>
+    </div>
+   </section><!-- Contact Section -->
+   <section id="contact" class="py-20 bg-amber-50">
+    <div class="max-w-6xl mx-auto px-4">
+     <div class="text-center mb-16"><span class="inline-block px-4 py-2 bg-amber-100 text-amber-700 rounded-full font-medium mb-4">Контакти</span>
+      <h2 id="contact-title" class="font-display text-4xl md:text-5xl font-bold text-amber-900 mb-4">Свържете се с нас</h2>
+      <div class="w-24 h-1 bg-amber-400 mx-auto rounded-full"></div>
+     </div>
+     <div class="grid md:grid-cols-2 gap-12"><!-- Contact Info -->
+      <div>
+       <div class="bg-white rounded-3xl p-8 warm-shadow">
+        <h3 class="font-display text-2xl font-bold text-amber-900 mb-6">Информация за контакт</h3>
+        <div class="space-y-6">
+         <div class="flex items-start gap-4">
+          <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0"><span class="text-2xl">📍</span>
+          </div>
+          <div>
+           <h4 class="font-semibold text-amber-900 mb-1">Адрес</h4>
+           <p class="text-amber-700">ул. „Медена" 15<br>
+            гр. София 1000</p>
+          </div>
+         </div>
+         <div class="flex items-start gap-4">
+          <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0"><span class="text-2xl">📞</span>
+          </div>
+          <div>
+           <h4 class="font-semibold text-amber-900 mb-1">Телефон</h4><a href="tel:+359888123456" class="text-amber-600 hover:text-amber-800 transition-colors">+359 888 123 456</a>
+          </div>
+         </div>
+         <div class="flex items-start gap-4">
+          <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0"><span class="text-2xl">⏰</span>
+          </div>
+          <div>
+           <h4 class="font-semibold text-amber-900 mb-1">Работно време</h4>
+           <p class="text-amber-700">Понеделник - Петък: 07:00 - 20:00<br>
+             Събота: 08:00 - 18:00<br>
+             Неделя: 09:00 - 14:00</p>
+          </div>
+         </div>
+         <div class="flex items-start gap-4">
+          <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0"><span class="text-2xl">📧</span>
+          </div>
+          <div>
+           <h4 class="font-semibold text-amber-900 mb-1">Имейл</h4><a href="mailto:info@pchela.bg" class="text-amber-600 hover:text-amber-800 transition-colors">info@pchela.bg</a>
+          </div>
+         </div>
+        </div><!-- Social Links -->
+        <div class="mt-8 pt-6 border-t border-amber-100">
+         <h4 class="font-semibold text-amber-900 mb-4">Последвай ни</h4>
+         <div class="flex gap-4"><a href="#" class="w-12 h-12 bg-amber-100 hover:bg-amber-200 rounded-full flex items-center justify-center transition-colors">
+           <svg class="w-6 h-6 text-amber-700" fill="currentColor" viewbox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+           </svg></a> <a href="#" class="w-12 h-12 bg-amber-100 hover:bg-amber-200 rounded-full flex items-center justify-center transition-colors">
+           <svg class="w-6 h-6 text-amber-700" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+           </svg></a>
+         </div>
+        </div>
+       </div>
+      </div><!-- Contact Form -->
+      <div>
+       <form id="contact-form" class="bg-white rounded-3xl p-8 warm-shadow">
+        <h3 class="font-display text-2xl font-bold text-amber-900 mb-6">Изпрати запитване</h3>
+        <div class="space-y-5">
+         <div><label for="name" class="block text-amber-800 font-medium mb-2">Вашето име</label> <input type="text" id="name" name="name" required class="w-full px-4 py-3 border-2 border-amber-200 rounded-xl focus:border-amber-400 focus:outline-none transition-colors" placeholder="Иван Иванов">
+         </div>
+         <div><label for="phone" class="block text-amber-800 font-medium mb-2">Телефон</label> <input type="tel" id="phone" name="phone" class="w-full px-4 py-3 border-2 border-amber-200 rounded-xl focus:border-amber-400 focus:outline-none transition-colors" placeholder="+359 888 000 000">
+         </div>
+         <div><label for="email" class="block text-amber-800 font-medium mb-2">Имейл</label> <input type="email" id="email" name="email" required class="w-full px-4 py-3 border-2 border-amber-200 rounded-xl focus:border-amber-400 focus:outline-none transition-colors" placeholder="ivan@example.com">
+         </div>
+         <div><label for="message" class="block text-amber-800 font-medium mb-2">Съобщение</label> <textarea id="message" name="message" rows="4" required class="w-full px-4 py-3 border-2 border-amber-200 rounded-xl focus:border-amber-400 focus:outline-none transition-colors resize-none" placeholder="Напишете вашето запитване тук..."></textarea>
+         </div><button type="submit" class="w-full px-8 py-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl transition-all transform hover:scale-[1.02] warm-shadow"> Изпрати съобщение </button>
+        </div>
+        <div id="form-success" class="hidden mt-4 p-4 bg-green-100 text-green-800 rounded-xl text-center">
+         ✅ Благодарим ви! Ще се свържем с вас скоро.
+        </div>
+       </form>
+      </div>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <footer class="bg-amber-900 text-amber-100 py-12">
+    <div class="max-w-6xl mx-auto px-4">
+     <div class="grid md:grid-cols-3 gap-8 mb-8">
+      <div>
+       <div class="flex items-center gap-3 mb-4">
+        <div class="text-4xl">
+         🐝
+        </div>
+        <div>
+         <h3 class="font-display text-2xl font-bold text-white">Пчела</h3>
+         <p class="text-amber-300 text-sm">сладкарница</p>
+        </div>
+       </div>
+       <p class="text-amber-200">Домашни сладкиши с любов от 1995 година. Три поколения майстори сладкари.</p>
+      </div>
+      <div>
+       <h4 class="font-semibold text-white mb-4">Бързи връзки</h4>
+       <ul class="space-y-2">
+        <li><a href="#home" class="text-amber-200 hover:text-white transition-colors">Начало</a></li>
+        <li><a href="#about" class="text-amber-200 hover:text-white transition-colors">За нас</a></li>
+        <li><a href="#products" class="text-amber-200 hover:text-white transition-colors">Продукти</a></li>
+        <li><a href="#contact" class="text-amber-200 hover:text-white transition-colors">Контакти</a></li>
+       </ul>
+      </div>
+      <div>
+       <h4 class="font-semibold text-white mb-4">Работно време</h4>
+       <ul class="space-y-2 text-amber-200">
+        <li>Пон - Пет: 07:00 - 20:00</li>
+        <li>Събота: 08:00 - 18:00</li>
+        <li>Неделя: 09:00 - 14:00</li>
+       </ul>
+      </div>
+     </div>
+     <div class="pt-8 border-t border-amber-800 text-center text-amber-300">
+      <p>© 2024 Сладкарница Пчела. Всички права запазени. 🍯</p>
+     </div>
+    </div>
+   </footer>
+  </div>
+  <script src="js/app.js"></script>
+ </body>
+</html>
