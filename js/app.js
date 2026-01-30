@@ -2,6 +2,152 @@
 (function() {
   'use strict';
   
+  // Carousel functionality
+  let cakesData = [];
+  let currentCarouselIndex = 0;
+  const cardsPerView = {
+    mobile: 1,
+    tablet: 2,
+    desktop: 3
+  };
+  let currentCardsPerView = cardsPerView.desktop;
+
+  // Load cakes data from JSON
+  async function loadCakesData() {
+    try {
+      const response = await fetch('mongodb/cakes.json');
+      if (response.ok) {
+        const data = await response.json();
+        cakesData = data.cakes;
+        initializeCarousel();
+      }
+    } catch (error) {
+      console.error('Error loading cakes data:', error);
+    }
+  }
+
+  // Determine cards per view based on screen size
+  function updateCardsPerView() {
+    if (window.innerWidth < 768) {
+      currentCardsPerView = cardsPerView.mobile;
+    } else if (window.innerWidth < 1024) {
+      currentCardsPerView = cardsPerView.tablet;
+    } else {
+      currentCardsPerView = cardsPerView.desktop;
+    }
+  }
+
+  // Initialize carousel
+  function initializeCarousel() {
+    updateCardsPerView();
+    renderCarouselCards();
+    createCarouselDots();
+    attachCarouselListeners();
+  }
+
+  // Render carousel cards
+  function renderCarouselCards() {
+    const slider = document.getElementById('cakes-slider');
+    slider.innerHTML = '';
+    
+    cakesData.forEach(cake => {
+      const card = document.createElement('div');
+      card.className = 'flex-shrink-0 w-full md:w-1/2 lg:w-1/3 px-3 py-4';
+      card.innerHTML = `
+        <div class="bg-white rounded-2xl overflow-hidden warm-shadow hover:shadow-2xl transition-all h-full flex flex-col">
+          <div class="relative h-48 bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center overflow-hidden">
+            <img src="${cake.image}" alt="${cake.name}" class="w-full h-full object-cover" 
+              onerror="this.style.background='linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='<span style=font-size:3.5rem>🎂</span>';"/>
+          </div>
+          <div class="p-4 flex-1 flex flex-col">
+            <h4 class="font-display text-lg font-bold text-amber-900 mb-2">${cake.name}</h4>
+            <div class="mt-auto">
+              <div class="flex justify-between items-center mb-3">
+                <span class="text-sm text-amber-700">${cake.priceEuro}</span>
+                <span class="text-lg font-bold text-amber-600">${cake.priceBGN}</span>
+              </div>
+              <button class="w-full px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold rounded-lg transition-all">
+                Към поръчка 🛒
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      slider.appendChild(card);
+    });
+  }
+
+  // Create carousel dots
+  function createCarouselDots() {
+    const dotsContainer = document.getElementById('carousel-dots');
+    dotsContainer.innerHTML = '';
+    const maxDots = Math.ceil(cakesData.length / currentCardsPerView);
+    
+    for (let i = 0; i < maxDots; i++) {
+      const dot = document.createElement('button');
+      dot.className = `w-2 h-2 rounded-full transition-all ${i === 0 ? 'bg-amber-600 w-6' : 'bg-amber-300'}`;
+      dot.addEventListener('click', () => goToCarouselSlide(i));
+      dotsContainer.appendChild(dot);
+    }
+  }
+
+  // Move carousel
+  function moveCarousel(direction) {
+    const maxSlides = Math.ceil(cakesData.length / currentCardsPerView);
+    currentCarouselIndex += direction;
+    
+    if (currentCarouselIndex < 0) {
+      currentCarouselIndex = maxSlides - 1;
+    } else if (currentCarouselIndex >= maxSlides) {
+      currentCarouselIndex = 0;
+    }
+    
+    updateCarouselPosition();
+  }
+
+  // Go to specific slide
+  function goToCarouselSlide(index) {
+    currentCarouselIndex = index;
+    updateCarouselPosition();
+  }
+
+  // Update carousel position
+  function updateCarouselPosition() {
+    const slider = document.getElementById('cakes-slider');
+    const translateValue = -currentCarouselIndex * 100;
+    slider.style.transform = `translateX(${translateValue}%)`;
+    
+    // Update dots
+    const dots = document.querySelectorAll('#carousel-dots button');
+    dots.forEach((dot, index) => {
+      if (index === currentCarouselIndex) {
+        dot.className = 'w-6 h-2 rounded-full transition-all bg-amber-600';
+      } else {
+        dot.className = 'w-2 h-2 rounded-full transition-all bg-amber-300';
+      }
+    });
+  }
+
+  // Attach carousel listeners
+  function attachCarouselListeners() {
+    document.getElementById('carousel-prev').addEventListener('click', () => moveCarousel(-1));
+    document.getElementById('carousel-next').addEventListener('click', () => moveCarousel(1));
+  }
+
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    const newCardsPerView = currentCardsPerView;
+    updateCardsPerView();
+    if (newCardsPerView !== currentCardsPerView) {
+      currentCarouselIndex = 0;
+      createCarouselDots();
+      updateCarouselPosition();
+    }
+  });
+
+  // Load cakes data on page load
+  loadCakesData();
+
   // Global state
   let userProfile = null;
   let allProfiles = [];
